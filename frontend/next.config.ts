@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
 			},
 		];
 	},
+	// サーバーサイドレンダリング実行時のExperimental設定
+	experimental: {
+		// サーバコンポーネントからの外部APIリクエストを許可
+		serverActions: {
+			allowedOrigins: ["localhost:3000", "localhost:8080"],
+		},
+	},
 };
 
 export default nextConfig;

@@ -1,20 +1,9 @@
 use actix_cors::Cors;
-use actix_web::{App, HttpResponse, HttpServer, Responder, get, http};
-use serde::Serialize;
+use actix_web::{App, HttpServer, http};
 
-#[derive(Serialize)]
-struct HelloResponse {
-    message: String,
-}
-
-#[get("/api/hello")]
-async fn hello_world() -> impl Responder {
-    let response = HelloResponse {
-        message: String::from("Hello, World!"),
-    };
-
-    HttpResponse::Ok().json(response)
-}
+// ハンドラーモジュールをインポート
+mod handlers;
+use handlers::hello::hello_world;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {

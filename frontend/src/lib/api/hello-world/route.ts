@@ -8,16 +8,19 @@ interface HelloResponse {
 // バックエンドAPIからデータを取得
 export async function getHelloWorld(): Promise<HelloResponse> {
 	try {
-		// Next.jsの設定したリライトを使用してプロキシ経由でアクセス
-		const response = await fetch("/api/hello", {
+		// 実行環境に応じてAPIのURLを設定
+		const apiUrl = typeof window === "undefined"
+			? "http://localhost:8080/api/hello" // サーバーサイドでの実行時
+			: "/api/hello"; // クライアントサイドでの実行時
+
+		console.log(`APIリクエスト先: ${apiUrl}`);
+		
+		const response = await fetch(apiUrl, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			// サーバーサイドで実行する場合はリクエストURLを絶対パスに変換
-			...(typeof window === "undefined" && {
-				next: { revalidate: 0 },
-			}),
+			cache: "no-store", // キャッシュを無効化
 		});
 
 		if (!response.ok) {
@@ -25,6 +28,7 @@ export async function getHelloWorld(): Promise<HelloResponse> {
 		}
 
 		const data = await response.json();
+		console.log("API応答データ:", data);
 		return data as HelloResponse;
 	} catch (error) {
 		console.error("Hello World APIの呼び出し中にエラーが発生しました:", error);
